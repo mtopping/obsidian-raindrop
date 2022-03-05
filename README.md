@@ -70,3 +70,9 @@ Quick starting guide for new plugin devs:
 ### API Documentation
 
 See https://github.com/obsidianmd/obsidian-api
+
+## What it does
+- Select link and add to raindrop
+- Show a list of bookmarks by tag and/or by collection
+- use a codeblock
+- show as list or table
