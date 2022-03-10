@@ -11,7 +11,18 @@ interface RaindropCollection {
   parentId?: string
 }
 
+interface BlockQueryMap {
+  search?: string | null
+  format?: string | null
+  sort?: string | null
+  collection?: number | null
+}
+
+type BlockQueryMapKeys = 'search' | 'format' | 'sort' | 'collection';
+
 export type {
   Link,
-  RaindropCollection
+  RaindropCollection,
+  BlockQueryMap,
+  BlockQueryMapKeys
 }

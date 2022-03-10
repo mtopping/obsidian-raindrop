@@ -1,21 +1,29 @@
+import type { BlockQueryMap, BlockQueryMapKeys, Link, RaindropCollection } from "src/types";
+import Collections from "src/components/Collections.svelte";
+
 import {
 	App,
+	Component,
 	Editor,
-	getLinkpath,
 	MarkdownView,
 	Menu,
 	MenuItem,
 	Modal,
-	Notice,
-	parseLinktext,
 	Plugin,
 	PluginSettingTab,
 	Setting,
+	type MarkdownPostProcessorContext,
 } from "obsidian";
-import { createRaindrop, getCollections, raindropConstants } from "src/raindrop";
-import { Link, RaindropCollection } from "src/types";
-import { isWikiLink, getLink, renderTreeToDOM, waitingIndicatorHTML } from "src/utils";
-// Remember to rename these classes and interfaces!
+
+import {
+	getCollections,
+	getRaindrops,
+} from "src/raindrop";
+
+import {
+	getLink,
+	renderTreeToDOM,
+} from "src/utils";
 
 interface ObsidianRaindropSettings {
 	raindropAccessToken: string;
@@ -29,9 +37,10 @@ export default class ObsidianRaindrop extends Plugin {
 	settings: ObsidianRaindropSettings;
 
 	async onload() {
-		// console.log("onload");
+		// console.info("onload");
 		await this.loadSettings();
 		this.registerEvents();
+		this.registerPostProcessors();
 
 		// This creates an icon in the left ribbon.
 		// const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
@@ -111,36 +120,41 @@ export default class ObsidianRaindrop extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	private handleEditorMenu(menu: Menu, editor: Editor, view: MarkdownView) {
-		// Add context menu for adding selected link to raindrop
-		// console.info("handleEditorMenu");
+	/**
+	 * registerPostProcessors
+	 * 
+	 * We use a code block preprocessor to parse the content for running queries to Raindrop
+	 * whenever the code block language is set to 'raindrop'
+	 */
+	private registerPostProcessors() {
+		// Raindrop code blocks.
+		let registered = this.registerMarkdownCodeBlockProcessor(
+			"raindrop",
+			async (source: string, el, ctx) => {
+				this.viewFromCodeBlock(source, el, ctx, ctx.sourcePath);
+			}
+		);
+		registered.sortOrder = -100;
 	}
 
+	/**
+	 * registerEvents
+	 * 
+	 * Bind callbacks to editor events
+	 * 
+	 * editor-menu: context menu to create a new Raindrop bookmark
+	 */
 	private registerEvents() {
 		// console.log("registerEvents");
 
 		// context menu
-		this.app.workspace.on("editor-menu", (menu, editor: Editor, view) => {
+		this.app.workspace.on("editor-menu", (menu: Menu, editor: Editor, view: MarkdownView) => {
 			// console.info("context menu");
 			menu.addItem((item: MenuItem) => {
 				item.setTitle("Create Raindrop Bookmark").onClick((evt) => {
 					this.handleCreateBookmark(editor);
 				});
 			});
-
-		// protocol handler for callbacks in raindrop oauth
-		// this.registerObsidianProtocolHandler(raindropConstants.OBSIDIAN_PROTOCOL_HANDLER_ACTION, handleRaindropOAuthCallback);
-
-			// getLinkpath(currentSelection), parseLinktext(currentSelection));
-			// const file = await this.createNewDiagramFile(view.file.parent);
-			// editor.replaceSelection(`![[${file.path}]]`);
-			// const leaf = this.app.workspace.splitActiveLeaf("horizontal");
-			// await leaf.setViewState({
-			// 	type: DIAGRAM_EDIT_VIEW_TYPE,
-			// 	state: { file: file.path },
-			// });
-			// });
-			// });
 		});
 
 		// this.registerEvent(
@@ -153,14 +167,17 @@ export default class ObsidianRaindrop extends Plugin {
 		// this.registerEvent(
 		//   this.app.workspace.on("file-menu", this.handleFileMenu, this)
 		// );
-		this.registerEvent(
-			this.app.workspace.on("editor-menu", this.handleEditorMenu, this)
-		);
 		// this.registerEvent(
 		//   this.app.workspace.on("layout-change", this.handleLayoutChange, this)
 		// );
 	}
 
+	/**
+	 * handleCreateBookmark
+	 * 
+	 * WIP: Create a bookmark in raindrop from the selected link
+	 * @param editor 
+	 */
 	private handleCreateBookmark(editor: Editor) {
 		// console.info("handleCreateBookmark");
 		const currentSelection = editor.getSelection();
@@ -186,62 +203,170 @@ export default class ObsidianRaindrop extends Plugin {
 		const link: Link = getLink(fullLine);
 		console.log(link);
 		// TODO show UI for extra fields (collection: select, tags: autocomplete, url, title)
-		new NewRaindropModal(this.app, this.settings.raindropAccessToken).open();
+		new NewRaindropModal(
+			this.app,
+			this.settings.raindropAccessToken
+		).open();
 		// with tag autocomplete, etc?
 		// createRaindrop(link, this.settings.raindropAccessToken);
 		// get the title
 		// const
 	}
 
-	// private handleRaindropOAuthCallback(params: any) {
-	// 	// https://developer.raindrop.io/v1/authentication/token
-	// 	console.info('handleRaindropOAuthCallback:')
-	// 	// expects {code: string} or {error: string}
-	// 	console.log(params);
+	/**
+	 * Generate HTML elements and append them to the provided element based on 
+	 * the results of a query to Raindrop using the provided parameters in a
+	 * codeblock with the 'raindrop' language defined.
+	 * 
+	 * https://developer.raindrop.io/v1/raindrops/multiple#common-parameters
+	 * https://help.raindrop.io/using-search/#operators
+	 * 
+	 * Collections special IDs:
+	 * 
+	 * 	0 to get all (except Trash)
+	 * 	-1 to get from "Unsorted"
+	 * 	-99 to get from "Trash"
+	 * 
+	 * @param {string} source Text content of the codeblock
+	 * @param {HTMLElement} el HTML element to which this code block is attached
+	 * @param {Component} component Obsidian component
+	 * @param {string} sourcePath 
+	 */
+	public async viewFromCodeBlock(
+		source: string,
+		el: HTMLElement,
+		component: Component | MarkdownPostProcessorContext,
+		sourcePath: string
+	) {
+		// console.info('viewFromCodeBlock');
 
-	// 	// check for error
-	// 	// 	access_denied (user says no to auth)
-	// 	// 	invalid_application_status (When your application exceeds the maximum token limit or when your application is being suspended due to abuse)
-	// 	const authCode = params.code || null;
-	// 	console.log({authCode});
-	// 	// if we have the code then we need to 
-	// }
+		const paramMap: BlockQueryMap = {
+			search: '',
+			format: '',
+			sort: '',
+			collection: 0
+		}
+
+		Object.keys(paramMap).forEach((key: BlockQueryMapKeys) => {
+			const re = new RegExp(`${key}:(.*)`);
+			const matchArr = source.match(re);
+			let result: string | number  = (matchArr && matchArr.length > 1) ? matchArr[1].trim() : null;
+
+			if(key === 'collection') {
+				paramMap['collection'] = parseInt(result) || 0;
+			} else {
+					paramMap[key] = result;
+			}
+		});
+		
+		try {
+			const raindrops = await getRaindrops(paramMap['collection'], paramMap['search'], paramMap['sort'], this.settings.raindropAccessToken);
+			
+			const container = (paramMap['format']) ? el.createEl('ul') : el.createEl('table');
+			
+			raindrops.items.forEach((raindrop: any) => {
+				let parent: HTMLElement;
+				
+				if(paramMap['format']) {
+					parent = container.createEl('li');
+				} else {
+					const row = container.createEl('tr');
+					parent = row.createEl('td');
+				}
+				
+				const a = parent.createEl('a', {href: raindrop.link, text: raindrop.title})
+
+			});
+		} catch (err) {
+			console.error(err);
+		}
+	}
 }
 
+/**
+ * Modal is used for creating a new raindrop bookmark
+ * 
+ * Work in progress
+ */
 class NewRaindropModal extends Modal {
 	raindropAccessToken: string;
 	// raindropCollections: Record<string,RaindropCollection>;
 	raindropCollections: any;
 	selectedRaindropRootCollection: RaindropCollection;
 	selectedRaindropChildCollection: RaindropCollection;
+	collectionsSelect: Collections;
 
 	constructor(app: App, raindropAccessToken: string) {
 		super(app);
 
 		this.raindropAccessToken = raindropAccessToken;
-		this.modalEl.empty();
+		// this.modalEl.empty();
 
-		this.modalEl.appendChild(waitingIndicatorHTML());
+		// this.modalEl.appendChild(waitingIndicatorHTML());
 
-		let _document = document.implementation.createHTMLDocument();
-		let treeContainer = _document.body.createDiv();
-		treeContainer.classList.add('scroll', 'tree', 'collections');
-		this.getCollectionsAsTree(treeContainer).then(dom => {
-			this.modalEl.empty();
-			this.modalEl.appendChild(treeContainer);
-		});
-		
+		// let _document = document.implementation.createHTMLDocument();
+		// let treeContainer = _document.body.createDiv();
+		// treeContainer.classList.add('scroll', 'tree', 'collections');
+		// // this.getCollectionsAsTree(treeContainer).then(dom => {
+		// 	this.modalEl.empty();
+		// 	this.collectionsSelect = new Select({
+		// 		target: this.modalEl,
+		// 		// props: {
+		// 		// 	variable: 1
+		// 		// }
+		// 	});
+		// this.collectionsSelect = new Flex({
+		// 	target: treeContainer
+		// })
+		// this.modalEl.appendChild(treeContainer);
+		// });
 	}
-	
+
 	async getCollectionsAsTree(rootElement: HTMLElement) {
-		this.raindropCollections = await getCollections(this.raindropAccessToken);
+		this.raindropCollections = await getCollections(
+			this.raindropAccessToken
+		);
 		return renderTreeToDOM(this.raindropCollections, rootElement);
 	}
-
 
 	onOpen() {
 		const { contentEl } = this;
 		contentEl.setText("Woah!");
+		contentEl.empty();
+
+		let items = [
+			{ value: "chocolate", label: "Chocolate" },
+			{ value: "pizza", label: "Pizza" },
+			{ value: "cake", label: "Cake" },
+			{ value: "chips", label: "Chips" },
+			{ value: "ice-cream", label: "Ice Cream" },
+		];
+
+		let value = { value: "cake", label: "Cake" };
+
+		function handleSelect(event: any) {
+			console.log("selected item", event.detail);
+			// .. do something here 🙂
+		}
+
+		//  <!-- <Select {items} {value} on:select={handleSelect}></Select> -->
+
+		// this.collectionsSelect = new Select({
+		// 	target: contentEl,
+		// 	props: {
+		// 		items,
+		// 		value,
+		// 		action
+		// 	}
+		// })
+
+		this.collectionsSelect = new Collections({
+			target: contentEl,
+
+			// props: {
+			// 	variable: 1
+			// }
+		});
 	}
 
 	onClose() {
@@ -250,6 +375,14 @@ class NewRaindropModal extends Modal {
 	}
 }
 
+/**
+ * 
+ * We use the *test token* from an app the user sets up themselves.
+ * The only way to securely use an app otherwise would be to establish
+ * a server/service for oauth to hide secret and I'm not up for supporting that.
+ * 
+ * https://developer.raindrop.io/v1/authentication/token
+ */
 class ObsidianRaindropSettingsTab extends PluginSettingTab {
 	plugin: ObsidianRaindrop;
 
@@ -264,16 +397,16 @@ class ObsidianRaindropSettingsTab extends PluginSettingTab {
 		containerEl.empty();
 
 		containerEl.createEl("h2", { text: "Raindrop Settings" });
-		
+
 		new Setting(containerEl)
 			.setName("Raindrop Test Token")
 			.setDesc("Test access token used to authenticate with Raindrop.io")
 			.addText((text) =>
 				text
-					.setPlaceholder('')
+					.setPlaceholder("")
 					.setValue(this.plugin.settings.raindropAccessToken)
 					.onChange(async (value) => {
-						console.log("Raindrop Access Token: ", value);
+						// console.info("Raindrop Access Token: ", value);
 						this.plugin.settings.raindropAccessToken = value;
 						await this.plugin.saveSettings();
 					})

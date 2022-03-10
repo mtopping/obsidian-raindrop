@@ -1,5 +1,6 @@
 import { Link, RaindropCollection } from "./types";
 import { arrayToTree } from "performant-array-to-tree";
+import { request } from "obsidian";
 
 const RAINDROP_API_BASE = "https://api.raindrop.io/rest/v1/";
 // get this from settings
@@ -162,6 +163,31 @@ const getCollections = async (accessToken: string) => {
   // return collections;
 };
 
+const getRaindrops = async (collectionID: number = 0, search: string, sort: string, accessToken: string) => {
+	const authorizationHeader = `Bearer ${accessToken}`;
+	let params: Record<string, any> = {
+	}
+  
+  let url = new URL(`${RAINDROP_API_BASE}raindrops/${collectionID}`);
+	if(search) params = {search, ...params}
+	if(sort) params = {sort, ...params}
+  
+  url.search = new URLSearchParams(params).toString();
+
+  return await fetch(url.toString(), {
+		method: 'GET',
+		headers: {
+			Authorization: `Bearer ${accessToken}`,
+      // ContentType: 'application/json'
+		},
+	})
+  .then((res: any) => res.json())
+  .then((json: any) => {
+    console.log(json);
+    return json;
+  });
+}
+
 const createRaindrop = (link: Link, accessToken: string) => {
 	console.info("createRaindrop");
 	// const authorizationHeader = `Bearer ${accessToken}`;
@@ -192,5 +218,6 @@ export {
 	// refreshAccessToken,
 	getCollections,
 	createRaindrop,
+  getRaindrops,
 	raindropConstants,
 };
