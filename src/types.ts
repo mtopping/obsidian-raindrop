@@ -16,9 +16,10 @@ interface BlockQueryMap {
   format?: string | null
   sort?: string | null
   collection?: number | null
+  showTags?: boolean
 }
 
-type BlockQueryMapKeys = 'search' | 'format' | 'sort' | 'collection';
+type BlockQueryMapKeys = 'search' | 'format' | 'sort' | 'collection' | 'showTags';
 
 export type {
   Link,

@@ -19,10 +19,11 @@
       "ES5",
       "ES6",
       "ES7"
-    ]
+    ],
+    "outDir": "dist"
   },
   "include": [
     "**/*"
   ],
-  "exclude": ["node_modules/*"],
+  "exclude": ["node_modules/*", "esbuild.config.mjs"],
 }

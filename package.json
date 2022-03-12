@@ -12,23 +12,25 @@
 	"author": "",
 	"license": "MIT",
 	"devDependencies": {
+		"@sveltestack/svelte-query": "^1.6.0",
 		"@tsconfig/svelte": "^3.0.0",
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "^5.2.0",
 		"@typescript-eslint/parser": "^5.2.0",
+		"broadcast-channel": "^4.10.0",
 		"builtin-modules": "^3.2.0",
 		"esbuild": "0.13.12",
 		"esbuild-svelte": "^0.6.3",
+		"node-sass": "^7.0.1",
 		"obsidian": "^0.13.26",
+		"performant-array-to-tree": "^1.11.0",
+		"prettier": "^2.5.1",
+		"sass": "^1.49.9",
 		"svelte": "^3.46.4",
 		"svelte-preprocess": "^4.10.4",
+		"svelte-select": "^4.4.7",
 		"tslib": "2.3.1",
 		"typescript": "^4.6.2"
 	},
-	"dependencies": {
-		"performant-array-to-tree": "^1.11.0",
-		"svelecte": "^3.6.0",
-		"svelte-flex": "^1.3.0",
-		"svelte-select": "^4.4.7"
-	}
+	"dependencies": {}
 }

@@ -1,4 +1,4 @@
-import { Link, RaindropCollection } from "./types";
+import type { Link, RaindropCollection } from "./types";
 
 const externalURIRegex =
 	/((http|https):\/\/)?[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?/;

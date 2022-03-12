@@ -1,4 +1,4 @@
-import { Link, RaindropCollection } from "./types";
+import type { Link, RaindropCollection } from "./types";
 import { arrayToTree } from "performant-array-to-tree";
 import { request } from "obsidian";
 
@@ -163,16 +163,33 @@ const getCollections = async (accessToken: string) => {
   // return collections;
 };
 
+// TODO memoize this function
+
 const getRaindrops = async (collectionID: number = 0, search: string, sort: string, accessToken: string) => {
-	const authorizationHeader = `Bearer ${accessToken}`;
+  console.info('getRaindrops');
+  // const getRaindrops = async () => {
+	// const authorizationHeader = `Bearer ${accessToken}`;
 	let params: Record<string, any> = {
 	}
   
   let url = new URL(`${RAINDROP_API_BASE}raindrops/${collectionID}`);
 	if(search) params = {search, ...params}
 	if(sort) params = {sort, ...params}
-  
+
   url.search = new URLSearchParams(params).toString();
+
+  // const { ok, json } = await fetch(url.toString(), {
+	// 	method: 'GET',
+	// 	headers: {
+	// 		Authorization: `Bearer ${accessToken}`,
+	// 	},
+	// })
+  // console.log(ok);
+  // console.log(json);
+  // if (!ok) {
+  //   throw new Error('Network response was not ok')
+  // }
+  // return json()
 
   return await fetch(url.toString(), {
 		method: 'GET',

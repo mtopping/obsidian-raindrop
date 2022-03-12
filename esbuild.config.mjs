@@ -50,6 +50,7 @@ esbuild.build({
 	logLevel: "info",
 	plugins: [sveltePlugin({
 		preprocess: sveltePreprocess(),
+		compilerOptions: { css: true },
 	})],
 	sourcemap: prod ? false : 'inline',
 	treeShaking: true,
