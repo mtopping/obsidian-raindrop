@@ -1,78 +1,66 @@
-## Obsidian Sample Plugin
+# Obsidian Raindrop Plugin
+This plugin allows for basic integration with [Raindrop.io](https://raindrop.io), a bookmarking service.
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+## Current Features
+- Create a codeblock to display a list of links from your Raindrop account that matches the provided search filters
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+## Planned Features
+- Create Raindrop bookmark from link within Obsidian
+	- Obsidian internal links
+	- External links
+- Create note from bookmark
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+## Example
+<pre>
+```raindrop
+collection: 0
+format: table
+search: #css
+sort: title
+```
+</pre>
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+### List View
+![[Screen Shot 2022-03-11 at 9.17.42 PM.png]]
 
-### First time developing plugins?
+### Table View
+![[Screen Shot 2022-03-11 at 9.32.33 PM.png]]
+  
 
-Quick starting guide for new plugin devs:
+### Codeblock Options
+| key        | optional | values                                                                           | effect                                                                                         |
+| ---------- |:--------:| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| collection |    Y     | number representing the collection ID                                | limit the search query to this collection; defaults to 0 (all)                                     |
+| format     |    Y     | 'list' or 'table'                                                                | show the results as a list or a table; defaults to 'list'                                      |
+| sort       |    Y     | [See Raindrop Sort Options](https://developer.raindrop.io/v1/raindrops/multiple) | Sets the sort order of the search results; defaults to '-created' (descending by created date) |
+| search     |    N     | [See Raindrop Search Examples](https://help.raindrop.io/using-search/#operators) | A text search query just as you would enter in the Raindrop UI to return a list of bookmarks   |
+| showTags   |    Y     | 'true' or 'false'                                                                | Displays tags for each bookmark; defaults to true                                              |
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+#### Finding the collection ID
+1. Visit your raindrop collection via the website, e.g. https://app.raindrop.io/my/15660833
+2. The string of numbers after '/my/' is your collection ID
+3. There are a few special collection IDs which can be used:
 
-### Releasing new releases
+   | ID  | Collection    |
+   |:---:| ------------- |
+   |  0  | All bookmarks |
+   | -1  | Unsorted      |
+   | -99 | Trash              |
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Plugin Setup
+After installing the plugin, you will need to setup a new app in your Raindrop account. Once you have completed this step, you can use your new app's test account key for access to the API.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+### Raindrop Test Token
 
-### Adding your plugin to the community plugin list
+I elected to not use the OAuth mechanism that the Raindrop API offers to avoid maintaining my own middleware.
 
-- Check https://github.com/obsidianmd/obsidian-releases/blob/master/plugin-review.md
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+1. Access the [Integrations](https://app.raindrop.io/settings/integrations) section of your Raindrop account
+2. Click "Create new app"
+3. Copy the "Test token"
 
-### How to use
-
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
-
-### Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-### Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint .\src\`
+In the plugin settings you can paste this test key to interact without needing to directly login with Raindrop.
 
 
-### API Documentation
+### Bookmark List Refresh Interval
 
-See https://github.com/obsidianmd/obsidian-api
-
-## What it does
-- Select link and add to raindrop
-- Show a list of bookmarks by tag and/or by collection
-- use a codeblock
-- show as list or table
+Your bookmarks will automatically refresh from Raindrop in the background for the current note. Set the number of minutes here for how often to check Raindrop for new links in the search codeblock of any active notes.

@@ -34,7 +34,6 @@
       notifyOnChangeProps: ["data", "error"],
     }
   );
-  console.log(params.format);
 </script>
 
 <div id="bookmark-block-container" class="container">
@@ -49,8 +48,7 @@
           <li class="">
             <span class="link-wrapper"
               ><a href={bookmark.link}>{bookmark.title}</a></span
-            >
-            {#if params.showTags === true}
+            >{#if params.showTags === true}
               <span class="tag-wrapper">
                 {#each bookmark.tags as tag, i}
                   <RaindropTag text={tag} />
@@ -71,9 +69,11 @@
             </td>
             {#if params.showTags === true}
               <td class="tag-wrapper">
-                {#each bookmark.tags as tag, i}
-                  <RaindropTag text={tag} />
-                {/each}
+                <div class="tags">
+                  {#each bookmark.tags as tag, i}
+                    <RaindropTag text={tag} />
+                  {/each}
+                </div>
               </td>
             {/if}
           </tr>
@@ -88,26 +88,44 @@
 
 <style lang="scss">
   table {
-    width: 100%;
-    border-collapse: collapse;
+    // width: 100%;
+    // border-collapse: collapse;
 
     tr {
-      align-items: center;
-      display: flex;
-      height: 2em;
-
-      .link-wrapper {
-        min-width: 70%;
-      }
+      // align-items: stretch;
+      // display: flex;
     }
 
     td {
-      display: flex;
-      height: 100%;
-      width: 100%;
+      padding-bottom: 0.25em;
+      padding-top: 0.25em;
+      // display: flex;
+
+      // flex-wrap: wrap;
+      // overflow: hidden;
 
       & > * {
-        align-self: center;
+        // align-self: center;
+      }
+
+      &.link-wrapper {
+        width: 70%;
+      }
+
+      &.tag-wrapper {
+        .tags {
+          display: flex;
+          flex-wrap: wrap;
+
+          & > :global(*) {
+            margin-bottom: 0.25em;
+            margin-top: 0.25em;
+          }
+        }
+        // justify-content: flex-end;
+        // width: 30%;
+        // display: flex;
+        // flex-wrap: wrap;
       }
     }
   }
@@ -115,14 +133,14 @@
   ul {
     li {
       margin-bottom: 1em;
+
+      .link-wrapper {
+        display: block;
+      }
     }
   }
 
   :global(div[data-mode="source"]) ul {
     padding-left: 1em;
-  }
-
-  .link-wrapper {
-    display: block;
   }
 </style>

@@ -13,6 +13,7 @@
     border-style: solid;
     border-width: 1px;
     color: var(--raindrop-tag-link-color);
+    display: inline-block;
     line-height: 1;
     font-size: 0.7em;
     margin-right: 0.5em;
@@ -21,6 +22,7 @@
     padding-right: 1em;
     padding-top: 0.15em;
     text-decoration: none;
+    white-space: nowrap;
 
     &:hover {
       color: var(--raindrop-tag-link-color-hover);
