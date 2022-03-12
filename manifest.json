@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-raindrop",
 	"name": "Obsidian Raindrop",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.12.0",
 	"description": "This plugin will integrate your Raindrop.io bookmarks to Obsidian",
 	"author": "Micah Topping",
