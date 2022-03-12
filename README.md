@@ -21,10 +21,10 @@ sort: title
 </pre>
 
 ### List View
-![Example List View](_images/obsidian-raindrop-list-view.png)
+![Example List View](https://raw.githubusercontent.com/mtopping/obsidian-raindrop/main/_images/obsidian-raindrop-list-view.png)
 
 ### Table View
-![Example Table View](_images/obsidian-raindrop-table-view.png)
+![Example Table View](https://raw.githubusercontent.com/mtopping/obsidian-raindrop/main/_images/obsidian-raindrop-table-view.png)
   
 
 ### Codeblock Options
