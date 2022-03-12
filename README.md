@@ -21,10 +21,10 @@ sort: title
 </pre>
 
 ### List View
-![[Screen Shot 2022-03-11 at 9.17.42 PM.png]]
+![Example List View](_images/obsidian-raindrop-list-view.png)
 
 ### Table View
-![[Screen Shot 2022-03-11 at 9.32.33 PM.png]]
+![Example Table View](_images/obsidian-raindrop-table-view.png)
   
 
 ### Codeblock Options
