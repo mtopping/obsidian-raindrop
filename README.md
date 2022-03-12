@@ -60,7 +60,18 @@ I elected to not use the OAuth mechanism that the Raindrop API offers to avoid m
 
 In the plugin settings you can paste this test key to interact without needing to directly login with Raindrop.
 
-
 ### Bookmark List Refresh Interval
 
 Your bookmarks will automatically refresh from Raindrop in the background for the current note. Set the number of minutes here for how often to check Raindrop for new links in the search codeblock of any active notes.
+
+## Recipes
+
+### Daily Bookmarks
+
+I use this query in my daily notes template. The date variable is transcluded when the page is created, giving you a list of bookmarks you created that day. It can be a helpful way to recall the things you read or researched that day.
+
+<pre>
+```raindrop
+search: created:{{DATE:yyyy-MM-DD}}
+```
+</pre>
