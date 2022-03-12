@@ -1,5 +1,5 @@
 # Obsidian Raindrop Plugin
-This plugin allows for basic integration with [Raindrop.io](https://raindrop.io), a bookmarking service.
+This plugin allows for basic integration with [Raindrop.io](https://raindrop.io), a bookmarking service and [Obsidian](https://obsidian.md).
 
 ## Current Features
 - Create a codeblock to display a list of links from your Raindrop account that matches the provided search filters
