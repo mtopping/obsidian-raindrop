@@ -55,6 +55,11 @@
                 {/each}
               </span>
             {/if}
+              <ul>
+                {#each bookmark.highlights as highlight, i}
+                <li>{highlight.text}<ul><li>{highlight.note}</li></ul></li>
+                {/each}
+              </ul>
           </li>
         {/each}
       </ul>
