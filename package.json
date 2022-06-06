@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-raindrop",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "This plugin will integrate your Raindrop.io bookmarks to Obsidian",
 	"main": "main.js",
 	"scripts": {
