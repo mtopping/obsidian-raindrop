@@ -19,13 +19,16 @@
 
   raindrops = useQuery(
     raindropsCacheKey,
-    async () =>
-      getRaindrops(
+    async () => {
+      const raindrops = await getRaindrops(
         params["collection"],
         params["search"],
         params["sort"],
         settings.raindropAccessToken
-      ),
+      );
+      const raindropsJSON = await raindrops.json();
+      return raindropsJSON;
+    },
     {
       retry: false,
       refetchInterval,

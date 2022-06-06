@@ -1,7 +1,7 @@
 const RAINDROP_API_BASE = "https://api.raindrop.io/rest/v1/";
 
 const getRaindrops = async (collectionID: number = 0, search: string, sort: string, accessToken: string) => {
-  // console.info('getRaindrops');
+  console.info('getRaindrops');
 	let params: Record<string, any> = {}
   let url = new URL(`${RAINDROP_API_BASE}raindrops/${collectionID}`);
   
@@ -16,10 +16,6 @@ const getRaindrops = async (collectionID: number = 0, search: string, sort: stri
 			Authorization: `Bearer ${accessToken}`,
 		},
 	})
-  .then((res: any) => res.json())
-  .then((json: any) => {
-    return json;
-  });
 }
 
 export {
