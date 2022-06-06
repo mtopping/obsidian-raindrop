@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS: ObsidianRaindropSettings = {
 
 export default class ObsidianRaindrop extends Plugin {
   settings: ObsidianRaindropSettings;
-  bookmarkBlockComponent: BookmarkBlockQueryProvider;
+  
 
   async onload() {
     // console.info("onload");
@@ -117,7 +117,7 @@ export default class ObsidianRaindrop extends Plugin {
     });
 
     try {
-      this.bookmarkBlockComponent = new BookmarkBlockQueryProvider({
+      new BookmarkBlockQueryProvider({
         target: el,
         props: {
           params: paramMap,
