@@ -1,6 +1,7 @@
 const RAINDROP_API_BASE = "https://api.raindrop.io/rest/v1/";
 
 const getRaindrops = async (collectionID: number = 0, search: string, sort: string, accessToken: string) => {
+  console.info('getRaindrops');
   var myHeaders = new Headers();
   myHeaders.append("Authorization",  `Bearer ${accessToken}`);
   var requestOptions = {
