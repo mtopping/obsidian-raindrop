@@ -16,12 +16,12 @@ import type {
 
 export interface ObsidianRaindropSettings {
   raindropAccessToken: string;
-  bookmarkListRefreshInterval: string;
+  bookmarkListRefreshInterval: Number;
 }
 
 const DEFAULT_SETTINGS: ObsidianRaindropSettings = {
   raindropAccessToken: "",
-  bookmarkListRefreshInterval: "60",
+  bookmarkListRefreshInterval: 60,
 };
 
 export default class ObsidianRaindrop extends Plugin {
@@ -173,10 +173,14 @@ class ObsidianRaindropSettingsTab extends PluginSettingTab {
       )
       .addText((text) =>
         text
-          .setPlaceholder("10")
-          .setValue(this.plugin.settings.bookmarkListRefreshInterval)
+          .setPlaceholder("60")
+          .setValue(this.plugin.settings.bookmarkListRefreshInterval.toString())
           .onChange(async (value) => {
-            this.plugin.settings.bookmarkListRefreshInterval = value;
+            const valueAsInt = parseInt(value);
+            if(isNaN(valueAsInt)) {
+              
+            }
+            this.plugin.settings.bookmarkListRefreshInterval = valueAsInt;
             await this.plugin.saveSettings();
           })
       );

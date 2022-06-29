@@ -46,9 +46,9 @@
     <span>Error: {$raindrops.error.message}</span>
   {:else}
     {#if params.format === "list"}
-      <ul>
+      <ul class="raindrop-list">
         {#each $raindrops.data.items as bookmark}
-          <li class="">
+          <li class="raindrop-list-item">
             <span class="link-wrapper"
               ><a href={bookmark.link}>{bookmark.title}</a></span
             >{#if params.showTags === true}
@@ -91,25 +91,10 @@
 
 <style lang="scss">
   table {
-    // width: 100%;
-    // border-collapse: collapse;
-
-    tr {
-      // align-items: stretch;
-      // display: flex;
-    }
 
     td {
       padding-bottom: 0.25em;
       padding-top: 0.25em;
-      // display: flex;
-
-      // flex-wrap: wrap;
-      // overflow: hidden;
-
-      & > * {
-        // align-self: center;
-      }
 
       &.link-wrapper {
         width: 70%;
@@ -125,10 +110,6 @@
             margin-top: 0.25em;
           }
         }
-        // justify-content: flex-end;
-        // width: 30%;
-        // display: flex;
-        // flex-wrap: wrap;
       }
     }
   }
@@ -143,7 +124,7 @@
     }
   }
 
-  :global(div[data-mode="source"]) ul {
+  :global(div[data-mode="source"]) .raindrop-list {
     padding-left: 1em;
   }
 </style>
