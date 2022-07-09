@@ -7,6 +7,7 @@ interface RaindropCollection {
   title: string
   description?: string
   count: number
+  highlights: Array<string>
   id: string
   parentId?: string
 }
