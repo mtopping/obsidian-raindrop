@@ -12,6 +12,8 @@ interface RaindropCollection {
 }
 
 interface BlockQueryMap {
+  highlights: boolean
+  raindropIDs?: string | null
   search?: string | null
   format?: string | null
   sort?: string | null
@@ -19,7 +21,7 @@ interface BlockQueryMap {
   showTags?: boolean
 }
 
-type BlockQueryMapKeys = 'search' | 'format' | 'sort' | 'collection' | 'showTags';
+type BlockQueryMapKeys = 'search' | 'format' | 'sort' | 'collection' | 'showTags' | 'raindropIDs' | 'highlights';
 
 export type {
   Link,

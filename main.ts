@@ -6,7 +6,7 @@ import {
   Setting,
   type MarkdownPostProcessorContext,
 } from "obsidian";
-import BookmarkBlockQueryProvider from "src/components/BookmarkBlockQueryProvider.svelte";
+import RaindropBlockQueryProvider from "src/components/RaindropBlockQueryProvider.svelte";
 
 import type {
   BlockQueryMap,
@@ -16,7 +16,7 @@ import type {
 
 export interface ObsidianRaindropSettings {
   raindropAccessToken: string;
-  bookmarkListRefreshInterval: Number;
+  bookmarkListRefreshInterval: number;
 }
 
 const DEFAULT_SETTINGS: ObsidianRaindropSettings = {
@@ -94,11 +94,13 @@ export default class ObsidianRaindrop extends Plugin {
     // console.info('viewFromCodeBlock');
 
     const paramMap: BlockQueryMap = {
+      highlights: false,
+      raindropIDs: "",
       search: "",
       format: "",
       sort: "",
       showTags: true,
-      collection: 0,
+      collection: undefined,
     };
 
     Object.keys(paramMap).forEach((key: BlockQueryMapKeys) => {
@@ -106,18 +108,20 @@ export default class ObsidianRaindrop extends Plugin {
       const matchArr = source.match(re);
       let result: string | number =
         matchArr && matchArr.length > 1 ? matchArr[1].trim() : null;
-
+      console.log(key, result);
       if (key === 'collection') {
-        paramMap['collection'] = parseInt(result) || 0;
+        paramMap['collection'] = (result === null) ? null : parseInt(result);
       } else if (key === 'showTags') {
         paramMap['showTags'] = (result !== 'false');
+      } else if (key === 'highlights') {
+        paramMap['highlights'] = (result === 'true');
       } else {
         paramMap[key] = result;
       }
     });
 
     try {
-      new BookmarkBlockQueryProvider({
+      new RaindropBlockQueryProvider({
         target: el,
         props: {
           params: paramMap,
