@@ -35,6 +35,7 @@ sort: title
 | sort       |    Y     | [See Raindrop Sort Options](https://developer.raindrop.io/v1/raindrops/multiple) | Sets the sort order of the search results; defaults to '-created' (descending by created date) |
 | search     |    N     | [See Raindrop Search Examples](https://help.raindrop.io/using-search/#operators) | A text search query just as you would enter in the Raindrop UI to return a list of bookmarks   |
 | showTags   |    Y     | 'true' or 'false'                                                                | Displays tags for each bookmark; defaults to true                                              |
+| highlights |    Y     | 'true' or 'false' | show highlights for the returned bookmarks |
 
 #### Finding the collection ID
 1. Visit your raindrop collection via the website, e.g. https://app.raindrop.io/my/15660833
